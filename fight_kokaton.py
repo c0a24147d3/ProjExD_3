@@ -141,15 +141,38 @@ class Bomb:
         screen.blit(self.img, self.rct)
 
 
+class Score:
+    """
+    スコアに関するクラス
+    """
+    def __init__(self):
+        """
+        引数に基づきスコアを生成する
+        """
+        self.fonto = pg.font.SysFont("hgp創英角ﾎﾟｯﾌﾟ体", 30)
+        self.score = 0
+        self.img = self.fonto.render(f"スコア:{self.score}", 0, (0, 0, 255))
+        self.rct = (100, 50)
+
+    def update(self, num, screen: pg.Surface):
+        """
+        生成したスコアを張り付ける
+        """
+        self.img = self.fonto.render(f"スコア:{5-num}", 0, (0, 0, 255))
+        screen.blit(self.img, self.rct)
+
 def main():
     pg.display.set_caption("たたかえ！こうかとん")
     screen = pg.display.set_mode((WIDTH, HEIGHT))    
     bg_img = pg.image.load("fig/pg_bg.jpg")
     bird = Bird((300, 200))
+
     # bomb = Bomb((255, 0, 0), 10)
     bombs = list() #爆弾用の空のリスト
     for i in range(NUM_OF_BOMBS):
         bombs.append(Bomb((255, 0, 0), 10))
+
+    score = Score()
 
     beam = None  # ゲーム初期化時にはビームは存在しない
     clock = pg.time.Clock()
@@ -190,6 +213,7 @@ def main():
             beam.update(screen)
         for bomb in bombs: 
             bomb.update(screen)
+        score.update(len(bombs), screen)  # スコアを描画
         pg.display.update()
         tmr += 1
         clock.tick(50)
