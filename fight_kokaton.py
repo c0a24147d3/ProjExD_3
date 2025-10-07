@@ -168,7 +168,7 @@ def main():
     bird = Bird((300, 200))
 
     # bomb = Bomb((255, 0, 0), 10)
-    bombs = list() #爆弾用の空のリスト
+    bombs = list()  # 爆弾用の空のリスト
     for i in range(NUM_OF_BOMBS):
         bombs.append(Bomb((255, 0, 0), 10))
 
