@@ -147,7 +147,7 @@ class Score:
     """
     def __init__(self):
         """
-        引数に基づきスコアを生成する
+        スコアを生成する
         """
         self.fonto = pg.font.SysFont("hgp創英角ﾎﾟｯﾌﾟ体", 30)
         self.score = 0
@@ -160,6 +160,32 @@ class Score:
         """
         self.img = self.fonto.render(f"スコア:{5-num}", 0, (0, 0, 255))
         screen.blit(self.img, self.rct)
+
+
+class Explosion:
+    """
+    衝突した爆弾の演出に関するクラス
+    """
+    def __init__(self, center: tuple[int, int]):
+        """
+        引数に基づき爆弾の爆発する座標を決定する
+        引数1 center: 爆弾の衝突した座標タプル
+        """
+        exp = pg.image.load("fig/explosion.gif")
+        exp_re = pg.transform.flip(exp, False, True)
+        self.explist = [exp, exp_re]
+        self.center = center
+        self.life = 5
+
+    def update(self, screen: pg.Surface):
+        """
+        経過時間に応じて爆発の絵を替える
+        引数screen: 画面Surface
+        """
+        self.life -= 1
+        if self.life > 0:
+            screen.blit(self.explist[self.life%2])
+
 
 def main():
     pg.display.set_caption("たたかえ！こうかとん")
@@ -175,6 +201,8 @@ def main():
     score = Score()  # Scoreインスタンスの生成
 
     beams = list()  # beamクラスのインスタンスを複数扱うためのリスト
+
+    explist = list()  # Explosionインスタンス用の空のリスト
 
     beam = None  # ゲーム初期化時にはビームは存在しない
     clock = pg.time.Clock()
@@ -208,6 +236,10 @@ def main():
                         bombs[i] = None
                         beams[j] = None
                         bird.change_img(6, screen)
+
+                        #爆発のインスタンスを生成しリストに追加
+                        exp = Explosion(bomb.rct)
+                        explist.append(exp)
 
         bombs = [bomb for bomb in bombs if bomb is not None]
         beams = [beam for beam in beams if beam is not None]
